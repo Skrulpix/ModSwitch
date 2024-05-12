@@ -123,7 +123,7 @@
             textmc.Name = "textmc";
             textmc.Size = new Size(480, 33);
             textmc.TabIndex = 6;
-            textmc.Text = "smth like \\myfolder\\mods";
+            textmc.Text = "smth like \\myfolder\\mymods";
             // 
             // buttonmods
             // 
@@ -144,6 +144,7 @@
             textmods.Size = new Size(480, 33);
             textmods.TabIndex = 8;
             textmods.Text = "smth like \\.minecraft\\mods";
+            textmods.TextChanged += textmods_TextChanged;
             // 
             // dropselect
             // 
@@ -156,6 +157,7 @@
             dropselect.Name = "dropselect";
             dropselect.Size = new Size(274, 34);
             dropselect.TabIndex = 9;
+            dropselect.SelectedIndexChanged += dropselect_SelectedIndexChanged;
             // 
             // checkselect
             // 

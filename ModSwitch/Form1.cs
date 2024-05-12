@@ -4,18 +4,45 @@ namespace ModSwitch
 {
     public partial class Form1 : Form
     {
+        private List<string> subfolderpath = new List<string>(); // Declare List to store path of Subfolders
+
         public Form1()
         {
             InitializeComponent();
+            LoadSavedPaths();
+            FormClosing += Form1_FormClosing;
         }
 
+        private void Form1_FormClosing1(object? sender, FormClosingEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void LoadSavedPaths()
+        {
+            // Retrieve stored paths and populate TextBoxes
+            textmods.Text = Properties.Settings.Default.SourceFolderPath;
+            textmc.Text = Properties.Settings.Default.DestinationFolderPath;
+        }
+
+        private void SavePaths()
+        {
+            // Save paths to application settings
+            Properties.Settings.Default.SourceFolderPath = textmods.Text;
+            Properties.Settings.Default.DestinationFolderPath = textmc.Text;
+            Properties.Settings.Default.Save();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Save paths when form is closing
+            SavePaths();
+        }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-
+            //
         }
-
-        private List<string> subfolderpath = new List<string>(); // Declare List to store path of Subfolders
 
         private void modsbutton_Click(object sender, EventArgs e)
         {
@@ -23,17 +50,7 @@ namespace ModSwitch
             {
                 string FolderModsPath = folderBrowsermods.SelectedPath;
                 textmods.Text = FolderModsPath; // Display Path in TextBox
-                string[] subfolders = Directory.GetDirectories(FolderModsPath);
-
-                dropselect.Items.Clear();
-                subfolderpath.Clear();
-
-                foreach (string subfolder in subfolders)
-                {
-                    string SubfolderName = Path.GetFileName(subfolder); // Get subfolder Name
-                    dropselect.Items.Add(SubfolderName); // Display Subfolders (Name only) in DropDown Menu
-                    subfolderpath.Add(subfolder); // Store full path of the Subfolders
-                }
+                UpdateComboBox(FolderModsPath);
             }
         }
 
@@ -43,6 +60,7 @@ namespace ModSwitch
             {
                 string FolderMcPath = folderBrowsermc.SelectedPath;
                 textmc.Text = FolderMcPath; // Display Path in TextBox
+                UpdateComboBox(FolderMcPath);
             }
         }
 
@@ -75,12 +93,42 @@ namespace ModSwitch
                 {
                     MessageBox.Show($"And Error occurred: {ex.Message}");
                 }
-             
+
             }
             else
             {
                 MessageBox.Show("Please select both source and destination folders!");
             }
         }
+
+        private void dropselect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Not currently implemented
+        }
+
+        private void textmods_TextChanged(object sender, EventArgs e)
+        {
+            string folderPath = textmods.Text;
+
+            if (Directory.Exists(folderPath))
+            {
+                UpdateComboBox(folderPath);
+            }
+        }
+
+        private void UpdateComboBox(string folderPath)
+        {
+            string[] subfolders = Directory.GetDirectories(folderPath);
+
+            dropselect.Items.Clear();
+            subfolderpath.Clear();
+
+            foreach (string subfolder in subfolders)
+            {
+                string SubfolderName = Path.GetFileName(subfolder); // Get subfolder Name
+                dropselect.Items.Add(SubfolderName); // Display Subfolders (Name only) in DropDown Menu
+                subfolderpath.Add(subfolder); // Store full path of the Subfolders
+            }
+        }       
     }
 }
